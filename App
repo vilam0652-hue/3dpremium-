@@ -1,0 +1,2053 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LAYER LAB — Премиальная 3D-печать фигурок на Bambu Lab A1</title>
+  
+  <meta name="description" content="LAYER LAB: Премиальная 3D-печать на принтерах Bambu Lab A1 с оригинальными катушками Bambu Lab. Онлайн-каталог и живой чат в реальном времени.">
+  <meta property="og:title" content="LAYER LAB — Мастерская 3D-печати">
+  <meta property="og:description" content="Синхронизация каталога онлайн, реальное время, честный филамент Bambu Lab.">
+
+  <!-- Шрифты Space Grotesk и Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Иконки Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#0a0b0d',
+              dark: '#101319',
+              card: '#141820',
+              cardHover: '#1a202c',
+              border: '#232834',
+              borderLight: '#32394a',
+              amber: '#f59e0b',
+              amberHover: '#d97706',
+              amberLight: '#fbbf24',
+              textMuted: '#949ca9',
+              textDim: '#647084'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0a0b0d;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Фоновая сетка */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Кастомный скроллбар */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0b0d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232834;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #f59e0b;
+    }
+
+    .glass-header {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 11, 13, 0.92);
+      border-bottom: 1px solid #232834;
+    }
+
+    .glass-bottom-bar {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(14, 17, 23, 0.95);
+      border-top: 1px solid #232834;
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fbbf24;
+    }
+
+    .btn-amber {
+      background: #f59e0b;
+      color: #0a0b0d;
+      transition: all 0.2s ease;
+    }
+    .btn-amber:hover, .btn-amber:active {
+      background: #fbbf24;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-dark {
+      background: #141820;
+      border: 1px solid #232834;
+      color: #f3f4f6;
+      transition: all 0.2s ease;
+    }
+    .btn-dark:hover {
+      background: #1a202c;
+      border-color: #32394a;
+    }
+
+    .chat-bubble-user {
+      background: #1c2331;
+      border: 1px solid #2d3648;
+      border-bottom-right-radius: 3px;
+    }
+    .chat-bubble-seller {
+      background: linear-gradient(145deg, #241d10, #18150f);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-bottom-left-radius: 3px;
+    }
+
+    /* Анимации для 10-секундного промо-ролика */
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(400%); }
+    }
+    .laser-scan {
+      animation: scanline 2.5s linear infinite;
+    }
+
+    /* Адаптивная высота чата для мобильных (с учётом клавиатуры и адресной строки) */
+    .mobile-chat-height {
+      height: calc(100dvh - 190px);
+    }
+    @media (min-width: 1024px) {
+      .mobile-chat-height {
+        height: 640px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
+
+  <!-- ==================== ШАПКА САЙТА (DESKTOP + MOBILE) ==================== -->
+  <header class="sticky top-0 z-40 glass-header">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Логотип -->
+      <a href="#" onclick="switchTab('catalog')" class="flex items-center gap-2.5 sm:gap-3 group select-none">
+        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-brand-card to-brand-black border border-brand-borderLight flex items-center justify-center shadow-lg group-hover:border-brand-amber transition-all">
+          <svg width="22" height="22" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="14,3 25,9.5 14,16 3,9.5" fill="#f59e0b" fill-opacity="0.9" stroke="#fbbf24" stroke-width="1.2" stroke-linejoin="round"/>
+            <polygon points="14,9 25,15.5 14,22 3,15.5" fill="none" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="1 1" opacity="0.6" stroke-linejoin="round"/>
+            <polygon points="14,15 25,21.5 14,28 3,21.5" fill="#141820" stroke="#f3f4f6" stroke-width="1.3" opacity="0.95" stroke-linejoin="round"/>
+            <line x1="3" y1="9.5" x2="3" y2="21.5" stroke="#f59e0b" stroke-width="1.2" opacity="0.7"/>
+            <line x1="25" y1="9.5" x2="25" y2="21.5" stroke="#f59e0b" stroke-width="1.2" opacity="0.7"/>
+            <line x1="14" y1="16" x2="14" y2="28" stroke="#fbbf24" stroke-width="1.4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="font-display font-bold text-lg sm:text-xl tracking-wider uppercase text-white leading-none">
+            LAYER<span class="text-brand-amber">LAB</span>
+          </div>
+          <div class="text-[9px] sm:text-[10px] tracking-widest uppercase text-brand-textDim font-semibold mt-0.5 sm:mt-1">
+            Bambu Lab A1
+          </div>
+        </div>
+      </a>
+
+      <!-- Десктоп-навигация -->
+      <nav class="hidden md:flex items-center gap-2.5">
+        <button id="nav-btn-catalog" onclick="switchTab('catalog')" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-brand-amber bg-brand-card border border-brand-border">
+          <i class="fa-solid fa-layer-group mr-1.5"></i> Каталог
+        </button>
+
+        <button id="nav-btn-equipment" onclick="switchTab('equipment')" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-brand-textMuted hover:text-white">
+          <i class="fa-solid fa-microchip mr-1.5"></i> Оборудование
+        </button>
+
+        <button id="nav-btn-chat" onclick="switchTab('chat')" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-brand-textMuted hover:text-white relative">
+          <i class="fa-solid fa-comments mr-1.5"></i> Чат с мастером
+          <span id="chat-unread-badge-desktop" class="hidden absolute -top-1 -right-1 w-2.5 h-2.5 bg-brand-amber rounded-full ring-2 ring-brand-black"></span>
+        </button>
+
+        <button onclick="openPromoVideoModal()" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all text-brand-amberLight bg-brand-amber/10 border border-brand-amber/30 hover:bg-brand-amber/20 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-play"></i> Промо 10с
+        </button>
+      </nav>
+
+      <!-- Панель Аккаунта (Разработчик и Покупатели) -->
+      <div class="flex items-center gap-2">
+        <button 
+          id="account-header-btn" 
+          onclick="openAccountModal()" 
+          class="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold bg-brand-card border border-brand-amber/40 text-brand-amber hover:bg-brand-amber hover:text-black transition-all shadow-md active:scale-95"
+        >
+          <i id="account-header-icon" class="fa-solid fa-user-astronaut text-sm"></i>
+          <span id="account-header-text" class="truncate max-w-[110px] sm:max-w-[160px]">Войти / Аккаунт</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Индикатор статуса синхронизации и текущего профиля -->
+  <div id="sync-bar" class="bg-brand-card border-b border-brand-border py-1 px-3 sm:px-4 text-center text-[11px] sm:text-xs text-brand-textMuted flex items-center justify-center gap-2">
+    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+    <span id="sync-text" class="truncate">Онлайн-синхронизация активна (все изменения видны всем)</span>
+    <span id="user-role-badge" class="px-2 py-0.5 rounded bg-brand-black border border-brand-border text-[10px] font-mono text-brand-amber">Гость</span>
+  </div>
+
+  <!-- ==================== ОСНОВНОЙ КОНТЕНТ ==================== -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-8">
+
+    <!-- ==================== ВКЛАДКА 1: КАТАЛОГ ==================== -->
+    <section id="tab-catalog" class="space-y-6 sm:space-y-10">
+      
+      <!-- Баннер с кнопкой 10-секундной видеопрезентации -->
+      <div class="relative rounded-2xl bg-gradient-to-r from-brand-card via-brand-dark to-brand-card border border-brand-border p-5 sm:p-10 overflow-hidden">
+        <div class="max-w-2xl relative z-10 space-y-3 sm:space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full badge-amber text-[10px] sm:text-xs font-semibold uppercase tracking-wider">
+            <i class="fa-solid fa-bolt"></i> Оригинальный Bambu Lab A1 + Фирменные катушки
+          </div>
+          <h1 class="font-display text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+            Премиальная 3D-печать <span class="text-brand-amber">без дефектов слоёв</span>
+          </h1>
+          <p class="text-brand-textMuted text-xs sm:text-sm md:text-base leading-relaxed">
+            Коллекционные фигурки, подвижные драконы, меха-роботы и печать по вашим файлам на флагманском принтере <strong class="text-white">Bambu Lab A1</strong> из фирменных катушек с RFID-калибровкой.
+          </p>
+          
+          <div class="flex flex-wrap gap-2.5 sm:gap-3 pt-2">
+            <button onclick="openPromoVideoModal()" class="px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold btn-amber flex items-center gap-2 shadow-lg animate-pulse hover:animate-none">
+              <i class="fa-solid fa-play text-black"></i> Смотреть видеопрезентацию (10 сек с озвучкой)
+            </button>
+            <button onclick="switchTab('chat')" class="px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold btn-dark flex items-center gap-2">
+              <i class="fa-solid fa-comment-dots text-brand-amber"></i> Чат с продавцом
+            </button>
+            <button id="admin-add-item-btn" onclick="openProductModal()" class="hidden px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-all flex items-center gap-2 shadow-lg">
+              <i class="fa-solid fa-plus"></i> Добавить товар с фото
+            </button>
+          </div>
+        </div>
+
+        <div class="absolute -right-8 -bottom-8 opacity-10 pointer-events-none hidden md:block">
+          <svg width="300" height="300" viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="90" stroke="#f59e0b" stroke-width="2" stroke-dasharray="8 8"/>
+            <polygon points="100,20 180,70 180,150 100,190 20,150 20,70" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Панель управления Разработчика / Продавца -->
+      <div id="admin-control-panel" class="hidden p-4 sm:p-5 rounded-xl bg-brand-card border-2 border-brand-amber/60 shadow-2xl space-y-3">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-amber/20 border border-brand-amber/40 flex items-center justify-center text-brand-amber shrink-0">
+              <i class="fa-solid fa-code text-lg"></i>
+            </div>
+            <div>
+              <div class="font-display font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                <span>Аккаунт Разработчика / Владельца активен</span>
+                <span class="px-2 py-0.5 text-[10px] rounded bg-brand-amber text-black font-bold uppercase">MASTER ADMIN</span>
+              </div>
+              <div class="text-[11px] sm:text-xs text-brand-textMuted">
+                Добавляйте фото и товары прямо отсюда — GitHub больше редактировать не нужно. Удалённые товары исчезают у всех навсегда.
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openProductModal()" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-brand-amber text-black hover:bg-brand-amberLight transition-all flex items-center gap-1.5 active:scale-95">
+              <i class="fa-solid fa-camera"></i> + Добавить товар и фото
+            </button>
+            <button onclick="openGithubGuideModal()" class="px-3 py-2 rounded-lg text-xs font-semibold btn-dark text-brand-amber border-brand-amber/40 hover:bg-brand-cardHover flex items-center gap-1.5">
+              <i class="fa-brands fa-github"></i> Инструкция GitHub и База
+            </button>
+            <button onclick="resetToDefaultCatalog()" class="px-3 py-2 rounded-lg text-xs font-semibold btn-dark text-brand-textMuted hover:text-white flex items-center gap-1.5" title="Вернуть 3 стартовых образца">
+              <i class="fa-solid fa-rotate-left"></i> Вернуть образцы
+            </button>
+            <button onclick="logoutAccount()" class="px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/30 transition-all">
+              Выйти
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Сетка товаров каталога -->
+      <div id="items-list" class="space-y-4 sm:space-y-6">
+        <div class="flex items-center justify-between border-b border-brand-border pb-3">
+          <div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-white">Витрина 3D-фигурок онлайн</h2>
+            <p class="text-[11px] sm:text-xs text-brand-textMuted mt-0.5">Все фотографии и позиции обновляются в реальном времени</p>
+          </div>
+          <div id="items-count-badge" class="text-[11px] sm:text-xs px-2.5 py-1 rounded-md bg-brand-card border border-brand-border text-brand-amber font-mono">
+            Загрузка...
+          </div>
+        </div>
+
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <!-- Рендерится через JS в реальном времени -->
+        </div>
+
+        <!-- Состояние: Нет товаров -->
+        <div id="no-products-state" class="hidden text-center py-12 px-4 border border-dashed border-brand-border rounded-xl">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-full bg-brand-card flex items-center justify-center text-brand-textDim text-2xl">
+            <i class="fa-solid fa-box-open"></i>
+          </div>
+          <h3 class="text-base font-semibold text-white">Все товары удалены или витрина пуста</h3>
+          <p class="text-xs text-brand-textMuted max-w-sm mx-auto mt-1">
+            Войдите в аккаунт разработчика (<code class="text-brand-amber">developer</code> / <code class="text-brand-amber">admin123</code>), чтобы загрузить свои фото и товары.
+          </p>
+          <div class="mt-4 flex justify-center gap-2">
+            <button onclick="openAccountModal()" class="px-4 py-2 rounded-lg text-xs font-semibold btn-amber">
+              Войти как Разработчик
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== ВКЛАДКА 2: ОБОРУДОВАНИЕ ==================== -->
+    <section id="tab-equipment" class="hidden space-y-6 sm:space-y-8">
+      <div class="border-b border-brand-border pb-3">
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">Честные технические стандарты</h2>
+        <p class="text-xs sm:text-sm text-brand-textMuted mt-0.5">Никаких выдуманных характеристик — только реальное оборудование мастерской</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <div class="p-5 sm:p-6 rounded-xl bg-brand-card border border-brand-border space-y-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-brand-amber/10 border border-brand-amber/30 flex items-center justify-center text-brand-amber text-lg sm:text-xl">
+            <i class="fa-solid fa-print"></i>
+          </div>
+          <h3 class="font-display text-lg sm:text-xl font-bold text-white">Принтер Bambu Lab A1</h3>
+          <p class="text-xs sm:text-sm text-brand-textMuted leading-relaxed">
+            Печать ведется на флагманском скоростном принтере Bambu Lab A1 с датчиками вихревых токов в экструдере и активным подавлением вибраций по всем осям.
+          </p>
+          <div class="pt-1 text-[11px] sm:text-xs font-mono text-brand-amber flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i> Автокалибровка потока пластика
+          </div>
+        </div>
+
+        <div class="p-5 sm:p-6 rounded-xl bg-brand-card border border-brand-border space-y-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-brand-amber/10 border border-brand-amber/30 flex items-center justify-center text-brand-amber text-lg sm:text-xl">
+            <i class="fa-solid fa-compact-disc"></i>
+          </div>
+          <h3 class="font-display text-lg sm:text-xl font-bold text-white">Фирменные катушки Bambu</h3>
+          <p class="text-xs sm:text-sm text-brand-textMuted leading-relaxed">
+            Используются исключительно оригинальные катушки филамента от <strong class="text-white">Bambu Lab</strong> (PLA Matte, PLA Basic, PETG-HF). Принтер считывает настройки катушки по чипу RFID.
+          </p>
+          <div class="pt-1 text-[11px] sm:text-xs font-mono text-brand-amber flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i> Идеальное спекание слоёв
+          </div>
+        </div>
+
+        <div class="p-5 sm:p-6 rounded-xl bg-brand-card border border-brand-border space-y-3">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-brand-amber/10 border border-brand-amber/30 flex items-center justify-center text-brand-amber text-lg sm:text-xl">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <h3 class="font-display text-lg sm:text-xl font-bold text-white">Детализация 0.08–0.16 мм</h3>
+          <p class="text-xs sm:text-sm text-brand-textMuted leading-relaxed">
+            Минимальная высота слоя делает ступеньки печати практически невидимыми глазу. Каждая фигурка проходит ручную зачистку точек поддержек.
+          </p>
+          <div class="pt-1 text-[11px] sm:text-xs font-mono text-brand-amber flex items-center gap-1.5">
+            <i class="fa-solid fa-check"></i> Премиальная матовая текстура
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 3: ОНЛАЙН-ЧАТ С ПРОДАВЦОМ ==================== -->
+    <section id="tab-chat" class="hidden space-y-4">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-brand-border pb-3">
+        <div>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+            <span>Прямой чат с продавцом</span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Online
+            </span>
+          </h2>
+          <p class="text-xs text-brand-textMuted mt-0.5" id="chat-subtitle">
+            Обсудите цвет катушки Bambu Lab, размеры или ваш заказ напрямую
+          </p>
+        </div>
+
+        <!-- Селектор диалогов для разработчика на смартфонах -->
+        <div id="admin-chat-selector-wrap" class="hidden items-center gap-2 w-full sm:w-auto">
+          <label class="text-[11px] font-semibold uppercase text-brand-amber shrink-0">Покупатель:</label>
+          <select id="admin-chat-dropdown" onchange="onAdminSelectChat(this.value)" class="flex-grow sm:flex-grow-0 bg-brand-card border border-brand-amber/50 text-white text-xs rounded-lg px-2.5 py-1.5 outline-none">
+            <option value="">Загрузка...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Чат-контейнер -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mobile-chat-height">
+        
+        <!-- Колонка диалогов всех покупателей для Разработчика (Desktop) -->
+        <div id="admin-chat-list-panel" class="hidden lg:flex flex-col bg-brand-card border border-brand-border rounded-xl p-3.5 overflow-hidden">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-brand-textDim mb-2.5 flex items-center justify-between">
+            <span>Диалоги клиентов</span>
+            <span id="chat-rooms-count" class="font-mono text-brand-amber">0</span>
+          </div>
+          <div id="chat-rooms-list" class="flex-grow overflow-y-auto space-y-1.5 pr-1">
+            <!-- Список комнат -->
+          </div>
+        </div>
+
+        <!-- Окно сообщений -->
+        <div id="chat-main-window" class="lg:col-span-4 flex flex-col bg-brand-card border border-brand-border rounded-xl overflow-hidden shadow-2xl h-full">
+          
+          <div class="p-3 sm:p-3.5 border-b border-brand-border bg-brand-dark flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2.5 truncate">
+              <div class="w-8 h-8 rounded-full bg-brand-amber/15 border border-brand-amber/40 flex items-center justify-center text-brand-amber shrink-0">
+                <i class="fa-solid fa-headset text-xs"></i>
+              </div>
+              <div class="truncate">
+                <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 truncate">
+                  <span id="chat-peer-title" class="truncate">Мастерская LAYER LAB</span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                </div>
+                <div class="text-[10px] text-brand-textDim font-mono truncate" id="chat-session-id">
+                  Вы пишете как: Гость
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="openAccountModal()" class="text-[11px] px-2.5 py-1 rounded bg-brand-card border border-brand-border text-brand-amber hover:border-brand-amber">
+                Сменить аккаунт
+              </button>
+            </div>
+          </div>
+
+          <div id="chat-messages-container" class="flex-grow p-3 sm:p-5 overflow-y-auto space-y-3">
+            <!-- Сообщения -->
+          </div>
+
+          <form id="chat-form" onsubmit="handleSendMessage(event)" class="p-2 sm:p-3 bg-brand-dark border-t border-brand-border flex items-center gap-2 shrink-0">
+            <input 
+              type="text" 
+              id="chat-input" 
+              placeholder="Введите сообщение..." 
+              class="flex-grow bg-brand-black border border-brand-border rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-brand-textDim outline-none focus:border-brand-amber transition-colors"
+              autocomplete="off"
+              required
+            >
+            <button type="submit" class="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl font-semibold btn-amber text-xs sm:text-sm flex items-center gap-1.5 shrink-0 active:scale-95">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span class="hidden sm:inline">Отправить</span>
+            </button>
+          </form>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== МОБИЛЬНОЕ НИЖНЕЕ МЕНЮ (BOTTOM BAR) ==================== -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-bottom-bar px-1 py-1.5 flex items-center justify-around">
+    
+    <button onclick="switchTab('catalog')" id="mob-btn-catalog" class="flex flex-col items-center justify-center p-1 text-brand-amber w-16">
+      <i class="fa-solid fa-layer-group text-base mb-1"></i>
+      <span class="text-[10px] font-medium leading-none">Каталог</span>
+    </button>
+
+    <button onclick="openPromoVideoModal()" class="flex flex-col items-center justify-center p-1 text-brand-amberLight w-16">
+      <i class="fa-solid fa-circle-play text-base mb-1"></i>
+      <span class="text-[10px] font-medium leading-none">Промо 10с</span>
+    </button>
+
+    <button onclick="switchTab('chat')" id="mob-btn-chat" class="flex flex-col items-center justify-center p-1 text-brand-textMuted w-16 relative">
+      <i class="fa-solid fa-comments text-base mb-1"></i>
+      <span class="text-[10px] font-medium leading-none">Чат</span>
+      <span id="chat-unread-badge-mob" class="hidden absolute top-1 right-3 w-2 h-2 bg-brand-amber rounded-full"></span>
+    </button>
+
+    <button onclick="openAccountModal()" id="mob-btn-admin" class="flex flex-col items-center justify-center p-1 text-brand-textDim w-16">
+      <i class="fa-solid fa-user-shield text-base mb-1 text-brand-amber"></i>
+      <span id="mob-admin-label" class="text-[10px] font-semibold text-brand-amber leading-none truncate max-w-[60px]">Аккаунт</span>
+    </button>
+
+  </div>
+
+  <!-- Футер -->
+  <footer class="border-t border-brand-border bg-brand-black py-6 sm:py-8 mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-brand-textDim text-center sm:text-left">
+      <div>
+        © 2026 LAYER LAB. 3D-печать на Bambu Lab A1 с фирменными катушками Bambu Lab.
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <button onclick="openPromoVideoModal()" class="text-brand-amber hover:underline font-semibold">▶ Промо-ролик (10 сек)</button>
+        <span>•</span>
+        <button onclick="openGithubGuideModal()" class="text-brand-textMuted hover:text-white">Инструкция GitHub</button>
+        <span>•</span>
+        <button onclick="openAccountModal()" class="text-brand-amber hover:underline font-semibold">Аккаунт / Разработчик</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== МОДАЛЬНОЕ ОКНО 1: СИСТЕМА АККАУНТОВ (ВХОД / РЕГИСТРАЦИЯ / РАЗРАБОТЧИК) ==================== -->
+  <div id="modal-account" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-brand-card border border-brand-borderLight rounded-2xl w-full max-w-md p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+      <div class="flex justify-between items-center border-b border-brand-border pb-3">
+        <h3 class="font-display font-bold text-base sm:text-lg text-white flex items-center gap-2">
+          <i class="fa-solid fa-id-badge text-brand-amber"></i> Система аккаунтов LAYER LAB
+        </h3>
+        <button onclick="closeModal('modal-account')" class="text-brand-textDim hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Если пользователь уже вошел в аккаунт -->
+      <div id="account-logged-in-view" class="hidden space-y-4">
+        <div class="p-4 rounded-xl bg-brand-dark border border-brand-amber/40 flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-brand-amber/20 border border-brand-amber flex items-center justify-center text-brand-amber text-xl shrink-0">
+            <i class="fa-solid fa-user-check"></i>
+          </div>
+          <div class="truncate">
+            <div id="logged-user-display" class="font-display font-bold text-white text-base truncate">...</div>
+            <div id="logged-user-login" class="text-xs font-mono text-brand-textMuted truncate">@...</div>
+            <div id="logged-user-role" class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-brand-amber text-black">Покупатель</div>
+          </div>
+        </div>
+
+        <div id="dev-extra-actions" class="hidden space-y-2 pt-1">
+          <button onclick="closeModal('modal-account'); openProductModal();" class="w-full py-2.5 rounded-lg text-xs font-bold btn-amber flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus-circle"></i> Добавить новый товар с фото
+          </button>
+          <button onclick="closeModal('modal-account'); openGithubGuideModal();" class="w-full py-2.5 rounded-lg text-xs font-semibold btn-dark text-brand-amber flex items-center justify-center gap-2">
+            <i class="fa-brands fa-github"></i> Настройки облака и инструкция GitHub
+          </button>
+        </div>
+
+        <button onclick="logoutAccount()" class="w-full py-2.5 rounded-lg text-xs font-semibold text-rose-400 border border-rose-500/40 hover:bg-rose-500/10 transition-all">
+          Выйти из аккаунта
+        </button>
+      </div>
+
+      <!-- Если пользователь НЕ вошел: Переключатель Вход / Регистрация -->
+      <div id="account-auth-forms-view" class="space-y-4">
+        <div class="grid grid-cols-2 gap-1.5 p-1 bg-brand-black rounded-xl border border-brand-border">
+          <button type="button" id="tab-auth-login" onclick="switchAuthSubTab('login')" class="py-2 rounded-lg text-xs font-bold bg-brand-amber text-black transition-all">
+            Вход в аккаунт
+          </button>
+          <button type="button" id="tab-auth-register" onclick="switchAuthSubTab('register')" class="py-2 rounded-lg text-xs font-bold text-brand-textMuted hover:text-white transition-all">
+            Создать аккаунт
+          </button>
+        </div>
+
+        <!-- Форма ВХОДА (Для Разработчика и для зарегистрированных покупателей) -->
+        <form id="form-login" onsubmit="handleAccountLogin(event)" class="space-y-3.5">
+          <div class="p-3 rounded-lg bg-brand-dark border border-brand-border text-[11px] text-brand-textMuted leading-relaxed">
+            <strong class="text-brand-amber"><i class="fa-solid fa-key mr-1"></i> Аккаунт Разработчика (Админа):</strong><br>
+            Имя аккаунта (логин): <code class="text-white font-mono font-bold">developer</code><br>
+            Пароль: <code class="text-white font-mono font-bold">admin123</code>
+          </div>
+
+          <div>
+            <label class="block text-[11px] uppercase font-semibold text-brand-textDim mb-1">Имя аккаунта (Логин)</label>
+            <input 
+              type="text" 
+              id="login-username" 
+              placeholder="developer или ваш логин" 
+              class="w-full bg-brand-black border border-brand-border rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:border-brand-amber"
+              required
+            >
+          </div>
+
+          <div>
+            <label class="block text-[11px] uppercase font-semibold text-brand-textDim mb-1">Пароль</label>
+            <input 
+              type="password" 
+              id="login-password" 
+              placeholder="••••••••" 
+              class="w-full bg-brand-black border border-brand-border rounded-lg px-3 py-2.5 text-sm text-white outline-none focus:border-brand-amber"
+              required
+            >
+          </div>
+
+          <div id="login-error-msg" class="hidden text-xs text-rose-400 font-medium"></div>
+
+          <button type="submit" class="w-full py-2.5 rounded-lg text-xs sm:text-sm font-bold btn-amber active:scale-95">
+            Войти на сайт
+          </button>
+        </form>
+
+        <!-- Форма РЕГИСТРАЦИИ нового покупателя -->
+        <form id="form-register" onsubmit="handleAccountRegister(event)" class="hidden space-y-3.5">
+          <p class="text-xs text-brand-textMuted">
+            Создайте личный аккаунт покупателя, чтобы делать заказы и общаться с продавцом в чате под своим именем:
+          </p>
+
+          <div>
+            <label class="block text-[11px] uppercase font-semibold text-brand-textDim mb-1">Ваше Имя / Никнейм (для чата)</label>
+            <input 
+              type="text" 
+              id="reg-displayname" 
+              placeholder="например: Алексей" 
+              class="w-full bg-brand-black border border-brand-border rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-brand-amber"
+              required
+            >
+          </div>
+
+          <div>
+            <label class="block text-[11px] uppercase font-semibold text-brand-textDim mb-1">Придумайте логин аккаунта</label>
+            <input 
+              type="text" 
+              id="reg-username" 
+              placeholder="alex3d" 
+              class="w-full bg-brand-black border border-brand-border rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-brand-amber"
+              required
+            >
+          </div>
+
+          <div>
+            <label class="block text-[11px] uppercase font-semibold text-brand-textDim mb-1">Придумайте пароль</label>
+            <input 
+              type="password" 
+              id="reg-password" 
+              placeholder="Минимум 4 символа" 
+              class="w-full bg-brand-black border border-brand-border rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-brand-amber"
+              required
+            >
+          </div>
+
+          <div id="reg-error-msg" class="hidden text-xs text-rose-400 font-medium"></div>
+
+          <button type="submit" class="w-full py-2.5 rounded-lg text-xs sm:text-sm font-bold btn-amber active:scale-95">
+            Зарегистрировать аккаунт
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== МОДАЛЬНОЕ ОКНО 2: 10-СЕКУНДНАЯ ВИДЕОПРЕЗЕНТАЦИЯ С ГОЛОСОВОЙ ОЗВУЧКОЙ ==================== -->
+  <div id="modal-promo-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg hidden items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-brand-card border-2 border-brand-amber/60 rounded-2xl w-full max-w-3xl overflow-hidden shadow-2xl my-auto">
+      
+      <!-- Шапка видеоплеера -->
+      <div class="px-4 py-3 bg-brand-dark border-b border-brand-border flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-amber animate-ping"></span>
+          <span class="font-display font-bold text-xs sm:text-sm text-white uppercase tracking-wider">
+            LAYER LAB — 10-Секундная Видеопрезентация (С голосовой озвучкой)
+          </span>
+        </div>
+        <button onclick="stopPromoVideo(); closeModal('modal-promo-video');" class="text-brand-textDim hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Экран 3D-анимации и сцен (16:9) -->
+      <div class="relative w-full h-64 sm:h-96 bg-brand-black overflow-hidden flex flex-col items-center justify-center select-none">
+        
+        <!-- Лазерная линия сканирования Bambu Lab A1 -->
+        <div id="promo-laser" class="hidden absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand-amber to-transparent opacity-80 laser-scan pointer-events-none z-20"></div>
+
+        <!-- Сетка координат -->
+        <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(#f59e0b 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+        <!-- Динамическая иконка/визуал текущей сцены -->
+        <div id="promo-scene-visual" class="relative z-10 flex flex-col items-center text-center px-6 transition-all duration-500 transform scale-100">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-brand-amber/15 border-2 border-brand-amber flex items-center justify-center text-brand-amber text-4xl sm:text-5xl mb-4 shadow-2xl">
+            <i id="promo-scene-icon" class="fa-solid fa-cubes"></i>
+          </div>
+          <div id="promo-scene-badge" class="px-3 py-0.5 rounded-full badge-amber text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-2">
+            BAMBU LAB A1 • ФИРМЕННЫЕ КАТУШКИ
+          </div>
+          <h2 id="promo-scene-title" class="font-display text-xl sm:text-3xl font-bold text-white max-w-xl leading-tight">
+            Готовы увидеть магию 3D-печати?
+          </h2>
+          <p id="promo-scene-subtitle" class="text-xs sm:text-sm text-brand-amberLight mt-2 max-w-lg font-medium">
+            Нажмите «Запустить ролик со звуком» — приятный голос расскажет о наших фигурках за 10 секунд!
+          </p>
+        </div>
+
+        <!-- Таймер и прогресс-бар 10.0 сек -->
+        <div class="absolute bottom-0 inset-x-0 bg-brand-dark/90 backdrop-blur-md p-3 border-t border-brand-border">
+          <div class="flex items-center justify-between text-[11px] font-mono text-brand-textMuted mb-1.5">
+            <span id="promo-status-label"><i class="fa-solid fa-volume-high text-brand-amber mr-1"></i> Голосовой синтезатор готов</span>
+            <span id="promo-time-counter" class="text-brand-amber font-bold">00.0 / 10.0 сек</span>
+          </div>
+          <div class="w-full h-2 bg-brand-black rounded-full overflow-hidden border border-brand-border">
+            <div id="promo-progress-bar" class="h-full bg-gradient-to-r from-brand-amberHover to-brand-amberLight w-0 transition-all duration-100"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Панель управления презентацией и текст диктора -->
+      <div class="p-4 sm:p-5 bg-brand-card space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <button id="promo-play-btn" onclick="startPromoVideo()" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold btn-amber flex items-center gap-2 shadow-lg active:scale-95">
+            <i class="fa-solid fa-play"></i> Запустить ролик со звуком (10 сек)
+          </button>
+
+          <div class="flex items-center gap-2">
+            <button onclick="copyVoiceScript()" class="px-3.5 py-2 rounded-xl text-xs font-semibold btn-dark text-brand-textMuted hover:text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-copy"></i> Скопировать текст озвучки
+            </button>
+            <button onclick="stopPromoVideo(); closeModal('modal-promo-video'); switchTab('catalog');" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white">
+              Перейти к покупкам
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-brand-black border border-brand-border text-xs text-brand-textMuted leading-relaxed">
+          <div class="text-[10px] uppercase font-bold text-brand-amber mb-1">Закадровый текст презентации (10 секунд):</div>
+          <p id="promo-script-text" class="italic text-white/90">
+            «Добро пожаловать в LAYER LAB! У нас вы можете купить коллекционные 3D-фигурки, подвижных драконов и меха-роботов. Мы печатаем каждую деталь на флагманском принтере Bambu Lab A1 из фирменных катушек с идеальной гладкостью. Выбирайте фигурку на витрине и заказывайте прямо сейчас!»
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== МОДАЛЬНОЕ ОКНО 3: ИНСТРУКЦИЯ GITHUB + НАСТРОЙКА FIREBASE ДЛЯ РАЗРАБОТЧИКА ==================== -->
+  <div id="modal-github-guide" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-brand-card border border-brand-borderLight rounded-2xl w-full max-w-2xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-brand-border pb-3">
+        <h3 class="font-display font-bold text-base sm:text-lg text-white flex items-center gap-2">
+          <i class="fa-brands fa-github text-brand-amber text-xl"></i> Как выложить на GitHub (Один раз и навсегда)
+        </h3>
+        <button onclick="closeModal('modal-github-guide')" class="text-brand-textDim hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs sm:text-sm text-brand-textMuted leading-relaxed">
+        <div class="p-3.5 rounded-xl bg-brand-dark border border-brand-amber/40 text-white">
+          <strong class="text-brand-amber">Главный принцип:</strong> Тебе нужно закинуть на GitHub <strong>только 1 файл — этот `index.html`</strong>. Больше в GitHub заходить НЕ нужно! Все фотографии товаров, цены, удаление и переписка работают прямо через кнопки на самом сайте.
+        </div>
+
+        <ol class="list-decimal list-inside space-y-2 text-white/90">
+          <li>Зайди на <strong>github.com</strong> и создай новый публичный репозиторий (например, <code class="text-brand-amber">layer-lab</code>).</li>
+          <li>Нажми <strong>Add file → Upload files</strong> и перетащи туда ровно один этот файл <code class="text-brand-amber font-bold">index.html</code>. Нажми <strong>Commit changes</strong>.</li>
+          <li>Перейди во вкладку <strong>Settings → Pages</strong> (слева), в разделе <strong>Branch</strong> выбери <code class="text-brand-amber">main</code> и нажми <strong>Save</strong>.</li>
+          <li>Через 1 минуту твой сайт откроется по ссылке! Нажми в шапке сайта <strong>«Войти / Аккаунт»</strong>, введи логин <code class="text-brand-amber font-bold">developer</code> и пароль <code class="text-brand-amber font-bold">admin123</code>.</li>
+        </ol>
+
+        <div class="p-4 rounded-xl bg-brand-black border border-brand-border space-y-2.5">
+          <div class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-database text-brand-amber"></i> Подключение своей базы Firebase (по желанию для GitHub Pages)
+          </div>
+          <p class="text-[11px] text-brand-textMuted">
+            Внутри нашего предпросмотра облако уже подключено автоматически. Если ты выложишь сайт на внешний GitHub Pages и захочешь подключить свой бесплатный проект с <b>console.firebase.google.com</b> (Firestore Database в тестовом режиме), просто вставь JSON-конфиг сюда — не меняя код:
+          </p>
+          <textarea id="custom-firebase-input" rows="3" placeholder='{"apiKey": "...", "projectId": "..."}' class="w-full bg-brand-card border border-brand-border rounded-lg p-2.5 text-xs font-mono text-white outline-none focus:border-brand-amber"></textarea>
+          <button onclick="saveCustomFirebaseConfig()" class="px-4 py-2 rounded-lg text-xs font-bold btn-amber">
+            Сохранить конфиг базы на сайте
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Всплывающий тост уведомления -->
+  <div id="toast" class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 bg-brand-card border border-brand-amber text-white text-xs font-medium px-3.5 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-brand-amber text-sm"></i>
+    <span id="toast-text">Действие выполнено</span>
+  </div>
+
+  <!-- Модалка: Подтверждение удаления товара -->
+  <div id="modal-delete-confirm" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-brand-card border border-rose-500/40 rounded-2xl w-full max-w-sm p-5 shadow-2xl space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+          <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        </div>
+        <div>
+          <h3 class="font-display font-bold text-base text-white">Удалить фигурку?</h3>
+          <p class="text-xs text-brand-textMuted mt-0.5">Товар будет удалён онлайн у всех посетителей</p>
+        </div>
+      </div>
+      <div id="delete-confirm-item-title" class="p-3 rounded-lg bg-brand-dark border border-brand-border text-xs font-semibold text-brand-amber truncate">...</div>
+      <div class="flex items-center gap-2 pt-1">
+        <button type="button" onclick="closeModal('modal-delete-confirm')" class="flex-1 py-2 rounded-lg text-xs font-semibold btn-dark">
+          Отмена
+        </button>
+        <button type="button" id="delete-confirm-exec-btn" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-all shadow-md active:scale-95">
+          <i class="fa-solid fa-trash-can mr-1"></i> Удалить
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FIREBASE REALTIME SDK ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInAnonymously, 
+      signInWithCustomToken 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      doc, 
+      setDoc, 
+      getDoc,
+      getDocs, 
+      addDoc, 
+      deleteDoc, 
+      onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    let firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : null;
+
+    if (!firebaseConfig && window.customFirebaseConfigJson) {
+      try { firebaseConfig = JSON.parse(window.customFirebaseConfigJson); } catch(e) {}
+    }
+
+    if (!firebaseConfig) {
+      firebaseConfig = {
+        apiKey: "demo-api-key",
+        authDomain: "layer-lab-demo.firebaseapp.com",
+        projectId: "layer-lab-demo",
+        storageBucket: "layer-lab-demo.appspot.com",
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:demo"
+      };
+    }
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'layer-lab-store';
+
+    let app, auth, db, currentUser = null;
+    let isFirebaseReady = false;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+
+      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        await signInWithCustomToken(auth, __initial_auth_token);
+      } else {
+        await signInAnonymously(auth);
+      }
+      currentUser = auth.currentUser;
+      isFirebaseReady = true;
+    } catch (err) {
+      console.warn("Локальный режим синхронизации:", err);
+      currentUser = { uid: 'user-' + Math.random().toString(36).substring(2, 9) };
+    }
+
+    window.appState = {
+      db,
+      auth,
+      appId,
+      user: currentUser,
+      isAdmin: false,
+      loggedAccount: null, // { username, displayName, role: 'developer' | 'buyer' }
+      activeChatRoomId: null,
+      isFirebaseReady,
+      currentOrderedProduct: null,
+      productToDeleteId: null,
+      deletedIds: new Set(),
+      registeredUsers: {}
+    };
+
+    initUsersSync();
+    initCatalogSync();
+    initChatSync();
+  </script>
+
+  <!-- ==================== СКРИПТ ПРИЛОЖЕНИЯ ==================== -->
+  <script>
+    // Встроенный аккаунт Разработчика (Админа)
+    const DEVELOPER_CREDENTIALS = {
+      usernames: ['developer', 'admin', 'master'],
+      passwords: ['admin123', 'bambu2026'],
+      displayName: 'Разработчик LAYER LAB'
+    };
+
+    const DEFAULT_PRODUCTS = [
+      {
+        id: 'sample-1',
+        title: 'Киберпанк Рейнджер V2',
+        price: 2400,
+        filament: 'Bambu PLA Matte (Graphite)',
+        layer: '0.10 мм (High Detail)',
+        size: 'Высота 16 см',
+        desc: 'Сверхточная микроструктурированная броня. Печать соплом 0.4 мм с активной компенсацией вибраций Bambu A1.',
+        imageUrl: 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=700&q=80',
+        createdAt: Date.now() - 300000
+      },
+      {
+        id: 'sample-2',
+        title: 'Чешуйчатый Дракон Страж',
+        price: 3100,
+        filament: 'Bambu PLA Basic (Black/Gold)',
+        layer: '0.12 мм (Balanced)',
+        size: 'Размах 24 см',
+        desc: 'Сложная геометрия перепонок крыльев и шипов. Модульная сборка из фирменного золотисто-чёрного филамента.',
+        imageUrl: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=700&q=80',
+        createdAt: Date.now() - 200000
+      },
+      {
+        id: 'sample-3',
+        title: 'Тяжелый Меха-Титан Дредноут',
+        price: 3600,
+        filament: 'Bambu PETG-HF (Tough)',
+        layer: '0.16 мм (Strong/Fast)',
+        size: 'Высота 18 см',
+        desc: 'Подвижные суставы. Износостойкий и прочный термопластик Bambu PETG-HF для высоких нагрузок.',
+        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=700&q=80',
+        createdAt: Date.now() - 100000
+      }
+    ];
+
+    const realtimeBus = new BroadcastChannel('layer_lab_realtime_bus');
+    realtimeBus.onmessage = (event) => {
+      const { type, payload } = event.data;
+      if (type === 'PRODUCTS_UPDATED') {
+        currentProductsList = payload.items || [];
+        if (payload.deletedIds && window.appState) {
+          window.appState.deletedIds = new Set(payload.deletedIds);
+        }
+        renderProducts(currentProductsList);
+      } else if (type === 'NEW_CHAT_MESSAGE') {
+        handleIncomingBroadcastMessage(payload);
+      } else if (type === 'USER_REGISTERED') {
+        if (window.appState) {
+          window.appState.registeredUsers[payload.username] = payload;
+        }
+      }
+    };
+
+    // Переключение вкладок
+    function switchTab(tabId) {
+      ['catalog', 'equipment', 'chat'].forEach(id => {
+        const el = document.getElementById(`tab-${id}`);
+        const desktopBtn = document.getElementById(`nav-btn-${id}`);
+        const mobBtn = document.getElementById(`mob-btn-${id}`);
+        
+        if (id === tabId) {
+          el.classList.remove('hidden');
+          if (desktopBtn) {
+            desktopBtn.classList.add('text-brand-amber', 'bg-brand-card', 'border', 'border-brand-border');
+            desktopBtn.classList.remove('text-brand-textMuted');
+          }
+          if (mobBtn) {
+            mobBtn.classList.add('text-brand-amber');
+            mobBtn.classList.remove('text-brand-textMuted');
+          }
+        } else {
+          el.classList.add('hidden');
+          if (desktopBtn) {
+            desktopBtn.classList.remove('text-brand-amber', 'bg-brand-card', 'border', 'border-brand-border');
+            desktopBtn.classList.add('text-brand-textMuted');
+          }
+          if (mobBtn) {
+            mobBtn.classList.remove('text-brand-amber');
+            mobBtn.classList.add('text-brand-textMuted');
+          }
+        }
+      });
+
+      if (tabId === 'chat') {
+        document.getElementById('chat-unread-badge-desktop')?.classList.add('hidden');
+        document.getElementById('chat-unread-badge-mob')?.classList.add('hidden');
+        scrollChatToBottom();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==================== СИСТЕМА АККАУНТОВ (РАЗРАБОТЧИК + ПОКУПАТЕЛИ) ====================
+    function initUsersSync() {
+      const { db, appId, isFirebaseReady } = window.appState || {};
+      if (isFirebaseReady && db && window.appState.user) {
+        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then(({ collection, onSnapshot }) => {
+          const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'users');
+          onSnapshot(usersCol, (snap) => {
+            snap.forEach(docSnap => {
+              const u = docSnap.data();
+              if (u && u.username) {
+                window.appState.registeredUsers[u.username.toLowerCase()] = u;
+              }
+            });
+          }, (err) => console.warn("Синхронизация профилей:", err));
+        });
+      }
+    }
+
+    function openAccountModal() {
+      const logged = window.appState?.loggedAccount;
+      const loggedView = document.getElementById('account-logged-in-view');
+      const formsView = document.getElementById('account-auth-forms-view');
+      const devActions = document.getElementById('dev-extra-actions');
+
+      if (logged) {
+        loggedView.classList.remove('hidden');
+        formsView.classList.add('hidden');
+        document.getElementById('logged-user-display').innerText = logged.displayName;
+        document.getElementById('logged-user-login').innerText = `@${logged.username}`;
+        const roleBadge = document.getElementById('logged-user-role');
+        if (logged.role === 'developer') {
+          roleBadge.innerText = 'РАЗРАБОТЧИК / АДМИН МАГАЗИНА';
+          devActions.classList.remove('hidden');
+        } else {
+          roleBadge.innerText = 'Покупатель LAYER LAB';
+          devActions.classList.add('hidden');
+        }
+      } else {
+        loggedView.classList.add('hidden');
+        formsView.classList.remove('hidden');
+      }
+      openModal('modal-account');
+    }
+
+    function switchAuthSubTab(mode) {
+      const btnLogin = document.getElementById('tab-auth-login');
+      const btnReg = document.getElementById('tab-auth-register');
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+
+      if (mode === 'login') {
+        btnLogin.className = "py-2 rounded-lg text-xs font-bold bg-brand-amber text-black transition-all";
+        btnReg.className = "py-2 rounded-lg text-xs font-bold text-brand-textMuted hover:text-white transition-all";
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+      } else {
+        btnReg.className = "py-2 rounded-lg text-xs font-bold bg-brand-amber text-black transition-all";
+        btnLogin.className = "py-2 rounded-lg text-xs font-bold text-brand-textMuted hover:text-white transition-all";
+        formReg.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+      }
+    }
+
+    function handleAccountLogin(e) {
+      e.preventDefault();
+      const rawUser = document.getElementById('login-username').value.trim().toLowerCase();
+      const rawPass = document.getElementById('login-password').value.trim();
+      const errEl = document.getElementById('login-error-msg');
+      errEl.classList.add('hidden');
+
+      // Проверка аккаунта Разработчика
+      if (DEVELOPER_CREDENTIALS.usernames.includes(rawUser) && DEVELOPER_CREDENTIALS.passwords.includes(rawPass)) {
+        const account = {
+          username: rawUser,
+          displayName: DEVELOPER_CREDENTIALS.displayName,
+          role: 'developer'
+        };
+        activateSessionAccount(account);
+        closeModal('modal-account');
+        e.target.reset();
+        showToast('Вход выполнен: Аккаунт Разработчика');
+        return;
+      }
+
+      // Проверка зарегистрированных покупателей
+      const existingBuyer = window.appState.registeredUsers[rawUser];
+      if (existingBuyer && existingBuyer.password === rawPass) {
+        const account = {
+          username: existingBuyer.username,
+          displayName: existingBuyer.displayName,
+          role: 'buyer'
+        };
+        activateSessionAccount(account);
+        closeModal('modal-account');
+        e.target.reset();
+        showToast(`Добро пожаловать, ${account.displayName}!`);
+        return;
+      }
+
+      errEl.innerText = 'Неверное имя аккаунта или пароль. Для разработчика: developer / admin123';
+      errEl.classList.remove('hidden');
+    }
+
+    async function handleAccountRegister(e) {
+      e.preventDefault();
+      const displayName = document.getElementById('reg-displayname').value.trim();
+      const username = document.getElementById('reg-username').value.trim().toLowerCase();
+      const password = document.getElementById('reg-password').value.trim();
+      const errEl = document.getElementById('reg-error-msg');
+      errEl.classList.add('hidden');
+
+      if (DEVELOPER_CREDENTIALS.usernames.includes(username)) {
+        errEl.innerText = 'Этот логин зарезервирован за Разработчиком!';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      if (password.length < 4) {
+        errEl.innerText = 'Пароль должен быть не короче 4 символов';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      if (window.appState.registeredUsers[username]) {
+        errEl.innerText = 'Такой логин уже занят другим покупателем!';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const newBuyer = {
+        username,
+        displayName,
+        password,
+        role: 'buyer',
+        createdAt: Date.now()
+      };
+
+      window.appState.registeredUsers[username] = newBuyer;
+      realtimeBus.postMessage({ type: 'USER_REGISTERED', payload: newBuyer });
+
+      const { db, appId, isFirebaseReady } = window.appState || {};
+      if (isFirebaseReady && db && window.appState.user) {
+        try {
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', username), newBuyer);
+        } catch (err) {
+          console.warn("Локальная регистрация:", err);
+        }
+      }
+
+      activateSessionAccount({
+        username,
+        displayName,
+        role: 'buyer'
+      });
+
+      closeModal('modal-account');
+      e.target.reset();
+      showToast(`Аккаунт @${username} успешно создан!`);
+    }
+
+    function activateSessionAccount(account) {
+      window.appState.loggedAccount = account;
+      window.appState.isAdmin = (account.role === 'developer');
+
+      const headerText = document.getElementById('account-header-text');
+      const mobLabel = document.getElementById('mob-admin-label');
+      const roleBadge = document.getElementById('user-role-badge');
+
+      if (account.role === 'developer') {
+        headerText.innerText = 'Разработчик';
+        mobLabel.innerText = 'Админ';
+        roleBadge.innerText = 'Разработчик (Master)';
+        applyAdminStateUI();
+      } else {
+        headerText.innerText = account.displayName;
+        mobLabel.innerText = account.displayName;
+        roleBadge.innerText = `@${account.username}`;
+        userChatRoomId = `user_${account.username}`;
+        window.appState.activeChatRoomId = userChatRoomId;
+        document.getElementById('chat-session-id').innerText = `Вы вошли как: ${account.displayName} (@${account.username})`;
+        renderProducts(currentProductsList);
+        initChatSync();
+      }
+    }
+
+    function logoutAccount() {
+      window.appState.loggedAccount = null;
+      window.appState.isAdmin = false;
+
+      document.getElementById('account-header-text').innerText = 'Войти / Аккаунт';
+      document.getElementById('mob-admin-label').innerText = 'Аккаунт';
+      document.getElementById('user-role-badge').innerText = 'Гость';
+
+      document.getElementById('admin-add-item-btn').classList.add('hidden');
+      document.getElementById('admin-control-panel').classList.add('hidden');
+      document.getElementById('admin-chat-list-panel').classList.add('hidden');
+      
+      const selWrap = document.getElementById('admin-chat-selector-wrap');
+      selWrap.classList.add('hidden');
+      selWrap.classList.remove('flex');
+
+      const mainChatWin = document.getElementById('chat-main-window');
+      if (mainChatWin) {
+        mainChatWin.classList.remove('lg:col-span-3');
+        mainChatWin.classList.add('lg:col-span-4');
+      }
+
+      userChatRoomId = window.appState.user?.uid || ('guest_' + Math.random().toString(36).substring(2, 7));
+      window.appState.activeChatRoomId = userChatRoomId;
+      document.getElementById('chat-peer-title').innerText = 'Мастерская LAYER LAB';
+      document.getElementById('chat-session-id').innerText = 'Вы пишете как: Гость';
+
+      closeModal('modal-account');
+      renderProducts(currentProductsList);
+      initChatSync();
+      showToast('Вы вышли из аккаунта');
+    }
+
+    function applyAdminStateUI() {
+      document.getElementById('admin-add-item-btn').classList.remove('hidden');
+      document.getElementById('admin-control-panel').classList.remove('hidden');
+      document.getElementById('admin-chat-list-panel').classList.remove('hidden');
+      
+      const selWrap = document.getElementById('admin-chat-selector-wrap');
+      selWrap.classList.remove('hidden');
+      selWrap.classList.add('flex');
+
+      const mainChatWin = document.getElementById('chat-main-window');
+      if (mainChatWin) {
+        mainChatWin.classList.remove('lg:col-span-4');
+        mainChatWin.classList.add('lg:col-span-3');
+      }
+
+      document.getElementById('chat-subtitle').innerText = 'Режим Разработчика: выберите покупателя слева для ответа';
+      document.getElementById('chat-session-id').innerText = 'Вы отвечаете от имени: Мастер LAYER LAB';
+      renderProducts(currentProductsList);
+      initChatSync();
+    }
+
+    // ==================== КАТАЛОГ ТОВАРОВ И НАДЁЖНОЕ УДАЛЕНИЕ У ВСЕХ ====================
+    let currentProductsList = [...DEFAULT_PRODUCTS];
+    let isSeedingCatalog = false;
+
+    function initCatalogSync() {
+      const { db, appId, isFirebaseReady } = window.appState || {};
+
+      if (isFirebaseReady && db && window.appState.user) {
+        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then(({ collection, onSnapshot }) => {
+          const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+          
+          onSnapshot(colRef, (snapshot) => {
+            const rawDocs = [];
+            let hasMetaDoc = false;
+            let metaDeletedIds = [];
+
+            snapshot.forEach(docSnap => {
+              if (docSnap.id === '__catalog_meta__') {
+                hasMetaDoc = true;
+                metaDeletedIds = docSnap.data().deletedIds || [];
+              } else {
+                rawDocs.push({ id: docSnap.id, ...docSnap.data() });
+              }
+            });
+
+            window.appState.deletedIds = new Set(metaDeletedIds);
+
+            // Если каталог запускается впервые (нет мета-документа и пусто) — засеваем стартовые образцы 1 раз
+            if (!hasMetaDoc && rawDocs.length === 0 && !isSeedingCatalog) {
+              populateInitialFirestoreCatalog();
+              return;
+            }
+
+            // Фильтруем удаленные товары, чтобы они НИКОГДА не возвращались
+            const visibleItems = rawDocs.filter(item => !window.appState.deletedIds.has(item.id) && !item.deleted);
+            visibleItems.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            currentProductsList = visibleItems;
+            renderProducts(currentProductsList);
+          }, (err) => {
+            console.error("Realtime ошибка каталога:", err);
+            renderProducts(currentProductsList);
+          });
+        });
+      } else {
+        renderProducts(currentProductsList);
+      }
+    }
+
+    async function populateInitialFirestoreCatalog() {
+      if (isSeedingCatalog) return;
+      isSeedingCatalog = true;
+      try {
+        const { setDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+        const { db, appId } = window.appState;
+        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', '__catalog_meta__'), {
+          initialized: true,
+          deletedIds: [],
+          updatedAt: Date.now()
+        });
+        for (const item of DEFAULT_PRODUCTS) {
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'products', item.id);
+          await setDoc(docRef, item);
+        }
+      } catch (e) {
+        console.warn("Ошибка первичной инициализации:", e);
+      } finally {
+        isSeedingCatalog = false;
+      }
+    }
+
+    function renderProducts(items) {
+      const grid = document.getElementById('products-grid');
+      const counter = document.getElementById('items-count-badge');
+      const emptyState = document.getElementById('no-products-state');
+
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        emptyState.classList.remove('hidden');
+        counter.innerText = '0 фигурок';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      counter.innerText = `${items.length} фигурок`;
+
+      const isAdmin = window.appState?.isAdmin || false;
+
+      items.forEach(product => {
+        const card = document.createElement('div');
+        card.id = `product-card-${product.id}`;
+        card.className = "group relative rounded-2xl bg-brand-card border border-brand-border hover:border-brand-borderLight transition-all duration-300 flex flex-col overflow-hidden hover:shadow-2xl";
+        
+        const deleteBtnHtml = isAdmin ? `
+          <button type="button" onclick="requestDeleteProduct('${product.id}', '${escapeHtml(product.title)}')" class="absolute top-2.5 right-2.5 z-20 px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-lg active:scale-90" title="Удалить товар у всех">
+            <i class="fa-solid fa-trash-can pointer-events-none"></i>
+            <span class="pointer-events-none">Удалить</span>
+          </button>
+        ` : '';
+
+        card.innerHTML = `
+          ${deleteBtnHtml}
+          
+          <div class="w-full h-56 sm:h-64 bg-brand-black relative overflow-hidden flex items-center justify-center border-b border-brand-border">
+            <img 
+              src="${product.imageUrl || './images/placeholder.jpg'}" 
+              alt="${escapeHtml(product.title)}"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              onerror="this.onerror=null; this.src='https://placehold.co/600x400/101319/f59e0b?text=${encodeURIComponent(product.title)}';"
+            >
+            <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded bg-brand-black/85 backdrop-blur-md border border-brand-border text-[10px] font-semibold text-brand-amberLight tracking-wider uppercase">
+              ${escapeHtml(product.size || 'Bambu Print')}
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-5 flex flex-col flex-grow">
+            <div class="flex items-center gap-1.5 mb-2 flex-wrap">
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-brand-black border border-brand-border text-brand-textMuted">
+                ${escapeHtml(product.filament)}
+              </span>
+              <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-brand-black border border-brand-border text-brand-amber">
+                ${escapeHtml(product.layer || '0.10 мм')}
+              </span>
+            </div>
+
+            <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-brand-amberLight transition-colors">
+              ${escapeHtml(product.title)}
+            </h3>
+
+            <p class="text-xs text-brand-textMuted mt-1.5 mb-3.5 leading-relaxed line-clamp-3 flex-grow">
+              ${escapeHtml(product.desc)}
+            </p>
+
+            <div class="pt-3 border-t border-brand-border flex items-center justify-between mt-auto">
+              <div>
+                <div class="text-[9px] uppercase font-semibold text-brand-textDim leading-none mb-1">Стоимость печати</div>
+                <div class="font-display text-lg sm:text-xl font-bold text-white">
+                  ${Number(product.price).toLocaleString('ru-RU')} <span class="text-brand-amber text-xs">₽</span>
+                </div>
+              </div>
+
+              <button onclick="openOrderModalById('${product.id}')" class="px-3.5 py-2 sm:px-4 sm:py-2 rounded-lg text-xs font-bold btn-amber flex items-center gap-1.5 shadow-md active:scale-95">
+                <i class="fa-solid fa-cart-shopping"></i> Заказать
+              </button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('prod-title').value.trim();
+      const price = Number(document.getElementById('prod-price').value);
+      const filament = document.getElementById('prod-filament').value;
+      const layer = document.getElementById('prod-layer').value;
+      const size = document.getElementById('prod-size').value.trim();
+      const desc = document.getElementById('prod-desc').value.trim();
+      let imageUrl = document.getElementById('prod-img-url').value.trim();
+
+      if (window.tempUploadedImageBase64) {
+        imageUrl = window.tempUploadedImageBase64;
+      }
+      if (!imageUrl) {
+        imageUrl = 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=700&q=80';
+      }
+
+      const newId = 'item_' + Date.now();
+      const newProduct = {
+        id: newId,
+        title,
+        price,
+        filament,
+        layer,
+        size,
+        desc,
+        imageUrl,
+        createdAt: Date.now()
+      };
+
+      // Мгновенно добавляем на экран
+      currentProductsList.unshift(newProduct);
+      renderProducts(currentProductsList);
+      realtimeBus.postMessage({
+        type: 'PRODUCTS_UPDATED',
+        payload: { items: currentProductsList, deletedIds: Array.from(window.appState.deletedIds) }
+      });
+
+      const { db, appId, isFirebaseReady } = window.appState || {};
+
+      if (isFirebaseReady && db && window.appState.user) {
+        try {
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', newId), newProduct);
+          showToast('Товар с фото опубликован у всех онлайн!');
+        } catch (err) {
+          console.error("Ошибка сохранения в облако:", err);
+          showToast('Товар опубликован!');
+        }
+      } else {
+        showToast('Товар с фото добавлен!');
+      }
+
+      closeModal('modal-product');
+      e.target.reset();
+      window.tempUploadedImageBase64 = null;
+      document.getElementById('prod-file-name').innerText = '';
+      document.getElementById('prod-preview-box').classList.add('hidden');
+    }
+
+    function requestDeleteProduct(productId, productTitle) {
+      window.appState.productToDeleteId = productId;
+      const titleBox = document.getElementById('delete-confirm-item-title');
+      if (titleBox) {
+        titleBox.innerText = productTitle || `Товар #${productId}`;
+      }
+      const execBtn = document.getElementById('delete-confirm-exec-btn');
+      if (execBtn) {
+        execBtn.onclick = () => executeDeleteProduct(productId);
+      }
+      openModal('modal-delete-confirm');
+    }
+
+    async function executeDeleteProduct(productId) {
+      closeModal('modal-delete-confirm');
+
+      // 1. Записываем ID в черный список удаленных, чтобы он никогда не восстановился
+      window.appState.deletedIds.add(productId);
+
+      // 2. Мгновенно убираем карточку из интерфейса
+      currentProductsList = currentProductsList.filter(item => item.id !== productId);
+      renderProducts(currentProductsList);
+
+      // 3. Оповещаем все открытые вкладки
+      realtimeBus.postMessage({
+        type: 'PRODUCTS_UPDATED',
+        payload: { items: currentProductsList, deletedIds: Array.from(window.appState.deletedIds) }
+      });
+
+      // 4. Удаляем из облака Firestore и обновляем мета-документ
+      const { db, appId, isFirebaseReady } = window.appState || {};
+      if (isFirebaseReady && db && window.appState.user) {
+        try {
+          const { doc, deleteDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', '__catalog_meta__'), {
+            initialized: true,
+            deletedIds: Array.from(window.appState.deletedIds),
+            updatedAt: Date.now()
+          });
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', productId));
+          showToast('Товар навсегда удален у всех пользователей!');
+        } catch (err) {
+          console.error("Ошибка удаления в Firestore:", err);
+          showToast('Товар удален!');
+        }
+      } else {
+        showToast('Товар удален!');
+      }
+    }
+
+    async function resetToDefaultCatalog() {
+      window.appState.deletedIds.clear();
+      currentProductsList = [...DEFAULT_PRODUCTS];
+      renderProducts(currentProductsList);
+
+      realtimeBus.postMessage({
+        type: 'PRODUCTS_UPDATED',
+        payload: { items: currentProductsList, deletedIds: [] }
+      });
+
+      const { db, appId, isFirebaseReady } = window.appState || {};
+      if (isFirebaseReady && db && window.appState.user) {
+        try {
+          const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', '__catalog_meta__'), {
+            initialized: true,
+            deletedIds: [],
+            updatedAt: Date.now()
+          });
+          for (const item of DEFAULT_PRODUCTS) {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', item.id), item);
+          }
+          showToast('Стартовые образцы восстановлены онлайн!');
+        } catch (e) {
+          console.warn("Сброс:", e);
+        }
+      } else {
+        showToast('Образцы восстановлены');
+      }
+    }
+
+    // Автоматическое сжатие загружаемых с телефона/ПК фотографий для сохранения прямо в базу сайта
+    function handleProductImageFile(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const nameEl = document.getElementById('prod-file-name');
+      if (nameEl) nameEl.innerText = file.name;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 750;
+          let w = img.width;
+          let h = img.height;
+
+          if (w > h && w > maxDim) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else if (h > maxDim) {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.76);
+
+          window.tempUploadedImageBase64 = compressed;
+          const previewBox = document.getElementById('prod-preview-box');
+          const previewImg = document.getElementById('prod-preview-img');
+          previewImg.src = compressed;
+          previewBox.classList.remove('hidden');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ==================== 10-СЕКУНДНАЯ ВИДЕОПРЕЗЕНТАЦИЯ С ПРИЯТНОЙ ОЗВУЧКОЙ ====================
+    let promoInterval = null;
+    let promoAudioCtx = null;
+
+    const PROMO_SCENES = [
+      {
+        timeStart: 0,
+        timeEnd: 2.5,
+        icon: 'fa-solid fa-cubes',
+        badge: 'LAYER LAB • BAMBU LAB A1',
+        title: 'Добро пожаловать в LAYER LAB!',
+        subtitle: 'Мастерская премиальных 3D-фигурок идеального качества'
+      },
+      {
+        timeStart: 2.5,
+        timeEnd: 5.5,
+        icon: 'fa-solid fa-dragon',
+        badge: 'КОЛЛЕКЦИОННЫЕ МОДЕЛИ',
+        title: 'Подвижные драконы, меха-роботы и герои',
+        subtitle: 'Высочайшая детализация каждого изгиба без видимых слоёв'
+      },
+      {
+        timeStart: 5.5,
+        timeEnd: 8.0,
+        icon: 'fa-solid fa-compact-disc',
+        badge: 'ОРИГИНАЛЬНЫЕ КАТУШКИ BAMBU LAB',
+        title: 'Печать на флагмане Bambu Lab A1',
+        subtitle: 'Фирменный пластик с RFID-калибровкой и благородной матовой текстурой'
+      },
+      {
+        timeStart: 8.0,
+        timeEnd: 10.1,
+        icon: 'fa-solid fa-cart-shopping',
+        badge: 'ЖИВОЙ ЧАТ И БЫСТРЫЙ ЗАКАЗ',
+        title: 'Закажите свою 3D-модель прямо сейчас!',
+        subtitle: 'Выберите фигурку на витрине или напишите нам в онлайн-чат'
+      }
+    ];
+
+    function openPromoVideoModal() {
+      openModal('modal-promo-video');
+    }
+
+    function startPromoVideo() {
+      stopPromoVideo();
+
+      const laserEl = document.getElementById('promo-laser');
+      const progressBar = document.getElementById('promo-progress-bar');
+      const timeCounter = document.getElementById('promo-time-counter');
+      const statusLabel = document.getElementById('promo-status-label');
+
+      laserEl.classList.remove('hidden');
+      statusLabel.innerHTML = `<i class="fa-solid fa-volume-high text-emerald-400 animate-pulse mr-1"></i> Идёт голосовая презентация...`;
+
+      // Запускаем мягкий атмосферный фоновый аккорд через Web Audio API
+      playAmbientSoundscape();
+
+      // Запускаем приятную русскую голосовую озвучку через Web Speech API
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const voiceText = "Добро пожаловать в Лейер Лаб! У нас вы можете купить коллекционные три-дэ фигурки, подвижных драконов и меха-роботов. Мы печатаем каждую деталь на флагманском принтере Бамбу Лаб А-один из фирменных катушек с идеальной гладкостью. Выбирайте фигурку на витрине и заказывайте прямо сейчас!";
+        const utterance = new SpeechSynthesisUtterance(voiceText);
+        utterance.lang = 'ru-RU';
+        utterance.rate = 1.08; // Динамичный темп на 10 секунд
+        utterance.pitch = 1.05; // Приятный мягкий тембр
+
+        const voices = window.speechSynthesis.getVoices();
+        const ruVoice = voices.find(v => v.lang.includes('ru') && (v.name.includes('Google') || v.name.includes('Irina') || v.name.includes('Milena') || v.name.includes('Natural'))) || voices.find(v => v.lang.includes('ru'));
+        if (ruVoice) utterance.voice = ruVoice;
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      const startTime = performance.now();
+      const duration = 10000; // ровно 10.0 секунд
+
+      promoInterval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        const sec = Math.min(10.0, elapsed / 1000);
+        const pct = Math.min(100, (elapsed / duration) * 100);
+
+        progressBar.style.width = `${pct}%`;
+        timeCounter.innerText = `${sec.toFixed(1).padStart(4, '0')} / 10.0 сек`;
+
+        // Обновляем сцену
+        const scene = PROMO_SCENES.find(s => sec >= s.timeStart && sec <= s.timeEnd) || PROMO_SCENES[PROMO_SCENES.length - 1];
+        if (scene) {
+          document.getElementById('promo-scene-icon').className = scene.icon;
+          document.getElementById('promo-scene-badge').innerText = scene.badge;
+          document.getElementById('promo-scene-title').innerText = scene.title;
+          document.getElementById('promo-scene-subtitle').innerText = scene.subtitle;
+        }
+
+        if (elapsed >= duration) {
+          clearInterval(promoInterval);
+          promoInterval = null;
+          laserEl.classList.add('hidden');
+          statusLabel.innerHTML = `<i class="fa-solid fa-check-circle text-brand-amber mr-1"></i> Презентация завершена! Выберите фигурку в каталоге.`;
+        }
+      }, 80);
+    }
+
+    function stopPromoVideo() {
+      if (promoInterval) {
+        clearInterval(promoInterval);
+        promoInterval = null;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (promoAudioCtx) {
+        try { promoAudioCtx.close(); } catch(e) {}
+        promoAudioCtx = null;
+      }
+      document.getElementById('promo-laser')?.classList.add('hidden');
+    }
+
+    function playAmbientSoundscape() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        promoAudioCtx = new AudioContext();
+        const now = promoAudioCtx.currentTime;
+
+        [220, 277.18, 329.63, 440].forEach((freq) => {
+          const osc = promoAudioCtx.createOscillator();
+          const gain = promoAudioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(0.025, now + 1.5);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 9.8);
+
+          osc.connect(gain);
+          gain.connect(promoAudioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 10);
+        });
+      } catch (e) {}
+    }
+
+    function copyVoiceScript() {
+      const txt = document.getElementById('promo-script-text').innerText;
+      copyText(txt, 'Сценарий 10-секундной озвучки скопирован!');
+    }
+
+    // ==================== ОНЛАЙН-ЧАТ ПО ИМЕНАМ АККАУНТОВ ====================
+    let userChatRoomId = null;
+    let chatMessages = [];
+    let knownChatRooms = new Map(); // roomId -> senderName
+
+    function initChatSync() {
+      const logged = window.appState?.loggedAccount;
+      if (!userChatRoomId) {
+        userChatRoomId = logged ? `user_${logged.username}` : (window.appState?.user?.uid || ('guest_' + Math.random().toString(36).substring(2, 7)));
+        window.appState.activeChatRoomId = userChatRoomId;
+      }
+
+      const { db, appId, isFirebaseReady } = window.appState || {};
+
+      if (isFirebaseReady && db && window.appState.user) {
+        import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js").then(({ collection, onSnapshot }) => {
+          const messagesCol = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+
+          onSnapshot(messagesCol, (snapshot) => {
+            const allMsgs = [];
+            knownChatRooms.clear();
+
+            snapshot.forEach(docSnap => {
+              const data = docSnap.data();
+              allMsgs.push({ id: docSnap.id, ...data });
+              if (data.roomId) {
+                const label = data.buyerName || `Клиент #${data.roomId.substring(0, 6)}`;
+                knownChatRooms.set(data.roomId, label);
+              }
+            });
+
+            allMsgs.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+            updateAdminRoomsList(knownChatRooms);
+
+            const currentRoom = window.appState.isAdmin ? (window.appState.activeChatRoomId || Array.from(knownChatRooms.keys())[0] || userChatRoomId) : userChatRoomId;
+            window.appState.activeChatRoomId = currentRoom;
+            chatMessages = allMsgs.filter(m => m.roomId === currentRoom);
+
+            renderChatMessages(chatMessages);
+          }, (err) => {
+            console.error("Ошибка чата:", err);
+            renderChatMessages(chatMessages);
+          });
+        });
+      } else {
+        if (chatMessages.length === 0) {
+          chatMessages = [
+            {
+              id: 'welcome-msg',
+              sender: 'seller',
+              senderName: 'Мастер LAYER LAB',
+              text: 'Здравствуйте! Напишите сюда любую модель или вопрос — я отвечу в реальном времени.',
+              timestamp: Date.now()
+            }
+          ];
+        }
+        renderChatMessages(chatMessages);
+      }
+    }
+
+    async function handleSendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const isAdmin = window.appState?.isAdmin || false;
+      const logged = window.appState?.loggedAccount;
+      const targetRoom = isAdmin ? (window.appState.activeChatRoomId || userChatRoomId) : userChatRoomId;
+
+      const buyerLabel = logged ? `${logged.displayName} (@${logged.username})` : `Гость (#${targetRoom.substring(0, 5)})`;
+
+      const msgObj = {
+        roomId: targetRoom,
+        sender: isAdmin ? 'seller' : 'user',
+        senderName: isAdmin ? 'Мастер LAYER LAB' : buyerLabel,
+        buyerName: isAdmin ? (knownChatRooms.get(targetRoom) || 'Покупатель') : buyerLabel,
+        text: text,
+        timestamp: Date.now()
+      };
+
+      input.value = '';
+
+      const { db, appId, isFirebaseReady } = window.appState || {};
+
+      if (isFirebaseReady && db && window.appState.user) {
+        try {
+          const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+          const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+          await addDoc(colRef, msgObj);
+        } catch (err) {
+          appendLocalMessage(msgObj);
+        }
+      } else {
+        appendLocalMessage(msgObj);
+      }
+    }
+
+    function appendLocalMessage(msg) {
+      chatMessages.push(msg);
+      renderChatMessages(chatMessages);
+      realtimeBus.postMessage({ type: 'NEW_CHAT_MESSAGE', payload: msg });
+    }
+
+    function handleIncomingBroadcastMessage(msg) {
+      const currentRoom = window.appState.isAdmin ? window.appState.activeChatRoomId : userChatRoomId;
+      if (msg.roomId === currentRoom) {
+        chatMessages.push(msg);
+        renderChatMessages(chatMessages);
+      }
+    }
+
+    function renderChatMessages(msgs) {
+      const box = document.getElementById('chat-messages-container');
+      if (!box) return;
+
+      if (!msgs || msgs.length === 0) {
+        box.innerHTML = `
+          <div class="text-center py-10 text-brand-textDim text-xs space-y-2">
+            <i class="fa-regular fa-comment-dots text-2xl text-brand-amber/50"></i>
+            <div>Диалог открыт. Напишите сообщение продавцу!</div>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = '';
+
+      msgs.forEach(m => {
+        const isFromSeller = m.sender === 'seller';
+        const isMyMessage = window.appState.isAdmin ? isFromSeller : !isFromSeller;
+
+        const row = document.createElement('div');
+        row.className = `flex flex-col ${isMyMessage ? 'items-end' : 'items-start'} max-w-full`;
+
+        const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        row.innerHTML = `
+          <div class="flex items-center gap-1.5 mb-1 px-1">
+            <span class="text-[10px] font-semibold ${isFromSeller ? 'text-brand-amberLight' : 'text-brand-textMuted'}">
+              ${isFromSeller ? '<i class="fa-solid fa-crown text-[9px] mr-1"></i> Мастер LAYER LAB' : escapeHtml(m.senderName || 'Покупатель')}
+            </span>
+            <span class="text-[9px] text-brand-textDim font-mono">${timeStr}</span>
+          </div>
+
+          <div class="p-3 rounded-xl text-xs sm:text-sm leading-relaxed max-w-[88%] sm:max-w-md ${isFromSeller ? 'chat-bubble-seller text-brand-amberLight' : 'chat-bubble-user text-white'}">
+            ${escapeHtml(m.text)}
+          </div>
+        `;
+
+        box.appendChild(row);
+      });
+
+      scrollChatToBottom();
+    }
+
+    function scrollChatToBottom() {
+      const box = document.getElementById('chat-messages-container');
+      if (box) box.scrollTop = box.scrollHeight;
+    }
+
+    function updateAdminRoomsList(roomsMap) {
+      const container = document.getElementById('chat-rooms-list');
+      const dropdown = document.getElementById('admin-chat-dropdown');
+      const counter = document.getElementById('chat-rooms-count');
+
+      if (!container || !dropdown) return;
+      const entries = Array.from(roomsMap.entries());
+      if (counter) counter.innerText = entries.length;
+
+      container.innerHTML = '';
+      dropdown.innerHTML = '';
+
+      if (entries.length === 0) {
+        container.innerHTML = `<div class="text-[11px] text-brand-textDim p-2">Пока нет сообщений</div>`;
+        dropdown.innerHTML = `<option value="">Нет диалогов</option>`;
+        return;
+      }
+
+      entries.forEach(([roomId, label]) => {
+        const isActive = roomId === window.appState.activeChatRoomId;
+        const item = document.createElement('div');
+        item.className = `p-2.5 rounded-lg text-xs cursor-pointer transition-all border ${isActive ? 'bg-brand-amber/15 border-brand-amber text-brand-amberLight font-semibold' : 'bg-brand-black border-brand-border text-brand-textMuted hover:border-brand-borderLight'}`;
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="truncate">${escapeHtml(label)}</span>
+            <i class="fa-solid fa-chevron-right text-[9px] opacity-70"></i>
+          </div>
+        `;
+        item.onclick = () => onAdminSelectChat(roomId);
+        container.appendChild(item);
+
+        const opt = document.createElement('option');
+        opt.value = roomId;
+        opt.innerText = label;
+        if (isActive) opt.selected = true;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    function onAdminSelectChat(roomId) {
+      if (!roomId) return;
+      window.appState.activeChatRoomId = roomId;
+      const label = knownChatRooms.get(roomId) || `Клиент #${roomId.substring(0, 6)}`;
+      document.getElementById('chat-peer-title').innerText = label;
+      initChatSync();
+    }
+
+    function openGithubGuideModal() {
+      openModal('modal-github-guide');
+    }
+
+    function saveCustomFirebaseConfig() {
+      const val = document.getElementById('custom-firebase-input').value.trim();
+      if (!val) return;
+      try {
+        JSON.parse(val);
+        window.customFirebaseConfigJson = val;
+        showToast('Конфиг базы принят! Перезапускаем синхронизацию...');
+        closeModal('modal-github-guide');
+      } catch (e) {
+        showToast('Ошибка: проверьте правильность JSON');
+      }
+    }
+
+    // ==================== ЗАКАЗ ТОВАРА ====================
+    function openOrderModalById(id) {
+      const item = currentProductsList.find(p => p.id === id);
+      if (!item) return;
+
+      window.appState.currentOrderedProduct = item;
+
+      document.getElementById('order-modal-title').innerText = item.title;
+      document.getElementById('order-modal-meta').innerHTML = `
+        <span><i class="fa-solid fa-cube text-brand-amber mr-1"></i> ${escapeHtml(item.size)}</span>
+        <span>•</span>
+        <span>${escapeHtml(item.filament)}</span>
+      `;
+      document.getElementById('order-modal-price').innerText = `${Number(item.price).toLocaleString('ru-RU')} ₽`;
+
+      openModal('modal-order');
+    }
+
+    function confirmOrderToChat() {
+      const item = window.appState.currentOrderedProduct;
+      if (!item) return;
+
+      closeModal('modal-order');
+      switchTab('chat');
+
+      const text = `Здравствуйте! Хочу заказать фигурку: «${item.title}» (${Number(item.price).toLocaleString('ru-RU')} ₽, катушка: ${item.filament}, ${item.size}). Когда сможете запустить на Bambu Lab A1?`;
+      
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = text;
+        input.focus();
+      }
+      showToast('Параметры фигурки подставлены в чат');
+    }
+
+    function copyOrderDetails() {
+      const item = window.appState.currentOrderedProduct;
+      if (!item) return;
+      const text = `Заказ 3D-печати LAYER LAB: ${item.title} (${item.price} руб., ${item.filament})`;
+      copyText(text, 'Параметры фигурки скопированы');
+      closeModal('modal-order');
+    }
+
+    // ==================== МОДАЛКИ И УТИЛИТЫ ====================
+    function openProductModal() {
+      openModal('modal-product');
+    }
+
+    function openModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.classList.remove('hidden');
+        el.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) {
+        el.classList.add('hidden');
+        el.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function copyText(text, toastMsg) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => showToast(toastMsg));
+      } else {
+        const t = document.createElement('textarea');
+        t.value = text;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+        showToast(toastMsg);
+      }
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      if (!toast || !toastText) return;
+
+      toastText.innerText = text;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
+```
